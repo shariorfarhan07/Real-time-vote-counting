@@ -12,8 +12,8 @@ RUN npm install
 # Copy application files
 COPY . .
 
-# Build argument for WebSocket URL
-ARG REACT_APP_WS_URL=ws://localhost:5556
+# Build argument for WebSocket URL (optional - leave empty for auto-detection)
+ARG REACT_APP_WS_URL=""
 ENV REACT_APP_WS_URL=$REACT_APP_WS_URL
 
 # Build the React app
