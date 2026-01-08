@@ -163,6 +163,26 @@ wss.on('connection', (ws) => {
   });
 });
 
+// Heartbeat/Health check endpoint
+app.get('/api/heartbeat', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    service: 'voting-backend',
+    version: '1.0.0'
+  });
+});
+
+// Health check endpoint (alias for heartbeat)
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // REST API endpoints for initial state (optional, for HTTP polling fallback)
 app.get('/api/state', (req, res) => {
   res.json(votingState);

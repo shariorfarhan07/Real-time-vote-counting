@@ -15,7 +15,7 @@ services:
     networks:
       - voting-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5556/api/state"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5556/api/heartbeat"]
       interval: 30s
       timeout: 10s
       retries: 3
