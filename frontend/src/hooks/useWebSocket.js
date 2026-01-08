@@ -1,6 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 
-const WS_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:5556';
+// Get WebSocket URL - use environment variable or auto-detect from current hostname
+const getWebSocketUrl = () => {
+  if (process.env.REACT_APP_WS_URL) {
+    return process.env.REACT_APP_WS_URL;
+  }
+  // Auto-detect: use current hostname (works for both localhost and server)
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const hostname = window.location.hostname;
+  const port = process.env.REACT_APP_WS_PORT || '5556';
+  return `${protocol}//${hostname}:${port}`;
+};
+
+const WS_URL = getWebSocketUrl();
 
 export function useWebSocket() {
   const [state, setState] = useState(null);
