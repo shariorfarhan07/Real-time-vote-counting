@@ -8,11 +8,18 @@ const getWebSocketUrl = () => {
   // Use port from URL if available, otherwise default to 5556
   const port = window.location.port === '5555' ? '5556' : (window.location.port || '5556');
   
-  // Only use REACT_APP_WS_URL if it's explicitly set and doesn't contain localhost
-  if (process.env.REACT_APP_WS_URL && !process.env.REACT_APP_WS_URL.includes('localhost')) {
-    return process.env.REACT_APP_WS_URL;
+  // Check if REACT_APP_WS_URL is set and valid (not empty, not just quotes, doesn't contain localhost)
+  const envWsUrl = process.env.REACT_APP_WS_URL;
+  if (envWsUrl && 
+      envWsUrl.trim() !== '' && 
+      envWsUrl !== '""' && 
+      envWsUrl !== "''" &&
+      !envWsUrl.includes('localhost') &&
+      (envWsUrl.startsWith('ws://') || envWsUrl.startsWith('wss://'))) {
+    return envWsUrl;
   }
   
+  // Always construct URL from current hostname (runtime detection)
   const wsUrl = `${protocol}//${hostname}:${port}`;
   return wsUrl;
 };
@@ -31,6 +38,13 @@ export function useWebSocket() {
     console.log('WebSocket URL:', WS_URL);
     console.log('Current location:', window.location.href);
     console.log('Hostname:', window.location.hostname);
+    console.log('REACT_APP_WS_URL env:', process.env.REACT_APP_WS_URL);
+
+    // Validate WebSocket URL before connecting
+    if (!WS_URL || WS_URL.trim() === '' || WS_URL === '""' || WS_URL === "''") {
+      console.error('ERROR: WebSocket URL is invalid:', WS_URL);
+      return;
+    }
 
     function connect() {
       try {
